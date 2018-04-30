@@ -20,6 +20,11 @@
 ## WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 
 from version_microsoft import WINVER, UNICODE
+from sdkddkver import _WIN32_WINNT
+try:
+	WINVER = _WIN32_WINNT
+except:
+	_WIN32_WINNT = WINVER
 
 from ctypes import *
 
@@ -419,11 +424,6 @@ for key, val in MSGS:
     exec('%s = %d' % (key, val)) #TODO without using 'exec'?
 
 BN_CLICKED    =     0
-
-VK_DOWN = 40
-VK_LEFT = 37
-VK_RIGHT = 39
-VK_DELETE  = 0x2E
 
 CS_HREDRAW = 2
 CS_VREDRAW = 1
