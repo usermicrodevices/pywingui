@@ -399,6 +399,24 @@ WM_MENUSELECT = 0x011F
 WM_MENUCHAR = 0x0120
 WM_ENTERIDLE = 0x0121
 
+MOUSEEVENTF_MOVE = 0x0001#mouse move
+MOUSEEVENTF_LEFTDOWN = 0x0002#left button down
+MOUSEEVENTF_LEFTUP = 0x0004#left button up
+MOUSEEVENTF_RIGHTDOWN = 0x0008#right button down
+MOUSEEVENTF_RIGHTUP = 0x0010#right button up
+MOUSEEVENTF_MIDDLEDOWN = 0x0020#middle button down
+MOUSEEVENTF_MIDDLEUP = 0x0040#middle button up
+MOUSEEVENTF_XDOWN = 0x0080#x button down
+MOUSEEVENTF_XUP = 0x0100#x button down
+MOUSEEVENTF_WHEEL = 0x0800#wheel button rolled
+if _WIN32_WINNT >= 0x0600:
+	MOUSEEVENTF_HWHEEL = 0x01000#hwheel button rolled
+if WINVER >= 0x0600:
+	MOUSEEVENTF_MOVE_NOCOALESCE = 0x2000#do not coalesce mouse moves
+MOUSEEVENTF_VIRTUALDESK = 0x4000#map to entire virtual desktop
+MOUSEEVENTF_ABSOLUTE = 0x8000#absolute move
+
+
 IMAGE_BITMAP = 0
 IMAGE_ICON = 1
 IMAGE_CURSOR = 2
@@ -475,14 +493,14 @@ OCR_IBEAM = 32513
 OCR_WAIT = 32514
 OCR_CROSS = 32515
 OCR_UP = 32516
-OCR_SIZE = 32640# OBSOLETE: use OCR_SIZEALL */
-OCR_ICON = 32641# OBSOLETE: use OCR_NORMAL */
+OCR_SIZE = 32640# OBSOLETE: use OCR_SIZEALL
+OCR_ICON = 32641# OBSOLETE: use OCR_NORMAL
 OCR_SIZENWSE = 32642
 OCR_SIZENESW = 32643
 OCR_SIZEWE = 32644
 OCR_SIZENS = 32645
 OCR_SIZEALL = 32646
-OCR_ICOCUR = 32647# OBSOLETE: use OIC_WINLOGO */
+OCR_ICOCUR = 32647# OBSOLETE: use OIC_WINLOGO
 OCR_NO = 32648
 if WINVER >= 0x0500:
 	OCR_HAND = 32649
@@ -596,6 +614,7 @@ GetWindowThreadProcessId = WINFUNCTYPE(DWORD, c_void_p, c_void_p)(('GetWindowThr
 MoveWindow = WINFUNCTYPE(c_bool, c_void_p, c_int, c_int, c_int, c_int, c_bool)(('MoveWindow', windll.user32))
 
 keybd_event = WINFUNCTYPE(None, BYTE, BYTE, DWORD, ULONG_PTR)(('keybd_event', windll.user32))
+mouse_event = WINFUNCTYPE(None, DWORD, DWORD, DWORD, DWORD, ULONG_PTR)(('mouse_event', windll.user32))
 
 SetCursor = windll.user32.SetCursor
 
@@ -621,3 +640,7 @@ GetCapture = windll.user32.GetCapture
 ReleaseCapture = windll.user32.ReleaseCapture
 ScreenToClient = windll.user32.ScreenToClient
 ClientToScreen = windll.user32.ClientToScreen
+
+def press_key(keycode):
+	keybd_event(keycode, MapVirtualKey(keycode, 0), 0, 0)
+	keybd_event(keycode, 0, KEYEVENTF_KEYUP, 0)
